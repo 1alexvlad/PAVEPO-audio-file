@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.security import OAuth2AuthorizationCodeBearer
 from fastapi.responses import RedirectResponse
-from config import config
+from config import settings
 
 
 router = APIRouter(
@@ -13,8 +13,8 @@ router = APIRouter(
 templates = Jinja2Templates(directory='templates')
 
 oauth2_scheme = OAuth2AuthorizationCodeBearer(
-    authorizationUrl=config.AUTHORIZE_URL,
-    tokenUrl=config.TOKEN_URL,
+    authorizationUrl=settings.AUTHORIZE_URL,
+    tokenUrl=settings.TOKEN_URL,
 )
 
 @router.get('/')
@@ -27,5 +27,5 @@ def index(request: Request):
 @router.get("/yandex")
 async def auth_yandex():
     return RedirectResponse(
-        f"{config.AUTHORIZE_URL}?response_type=code&client_id={config.CLIENT_ID}&redirect_uri={config.REDIRECT_URL}"
+        f"{settings.AUTHORIZE_URL}?response_type=code&client_id={settings.CLIENT_ID}&redirect_uri={settings.REDIRECT_URL}"
     )

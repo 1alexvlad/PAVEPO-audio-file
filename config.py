@@ -1,14 +1,29 @@
-import os
-from dotenv import load_dotenv
-from pydantic import BaseConfig
+from typing import Optional
+from pydantic_settings import BaseSettings  
+from pydantic import model_validator
 
-load_dotenv()
+class Settings(BaseSettings):
+    CLIENT_ID: str
+    CLIENT_SECRET: str
+    REDIRECT_URL: str
+    AUTHORIZE_URL: str
+    TOKEN_URL: str
 
-class Config(BaseConfig):
-    CLIENT_ID: str = os.environ.get("clientID")
-    CLIENT_SECRET: str = os.environ.get("client_secret")
-    REDIRECT_URL: str = os.environ.get("redirect_url")
-    AUTHORIZE_URL: str = os.environ.get("authorize_url") 
-    TOKEN_URL: str = os.environ.get("token_url")
+    DB_HOST: str
+    DB_PORT: int
+    DB_USER: str
+    DB_PASS: str
+    DB_NAME: str
 
-config = Config()
+    DATABASE_URL: Optional[str] = None
+
+
+    @model_validator(mode="after")
+    def get_database_url(cls, values):
+        values.DATABASE_URL = f"postgresql+asyncpg://{values.DB_USER}:{values.DB_PASS}@{values.DB_HOST}:{values.DB_PORT}/{values.DB_NAME}"
+        return values
+
+    class Config:
+        env_file = '.env'
+
+settings = Settings()
