@@ -2,7 +2,8 @@ from fastapi import APIRouter, File, HTTPException, UploadFile
 
 
 router_file = APIRouter(
-    prefix='/files'
+    prefix='/files',
+    tags=['Файлы'] 
 )
 
 @router_file.post('/')
